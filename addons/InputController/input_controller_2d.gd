@@ -26,6 +26,9 @@ func _physics_process(_delta):
 	if Engine.is_editor_hint():
 		return
 		
+	move()
+	jump()
+		
 	
 		
 func move() -> void:
@@ -49,30 +52,30 @@ func jump() -> void:
 	
 	if parent.is_on_floor():
 		if Input.is_action_pressed(action_jump):
-			parent.velocity.y = JUMP_FORCE
+			velocity.y = JUMP_FORCE
 	else:
 		apply_addicional_fall_gravity()
 		
 		
 func apply_friction() -> void:
-	parent.velocity.x = move_toward(parent.velocity.x, 0, FRICTION)
+	velocity.x = move_toward(velocity.x, 0, FRICTION)
 
 
 func apply_acceleration(amount:int) -> void:
-	parent.velocity.x = move_toward(parent.velocity.x, MAX_SPEED * amount, ACCELERATION)
+	velocity.x = move_toward(velocity.x, MAX_SPEED * amount, ACCELERATION)
 
 
 func apply_gravity() -> void:
-	parent.velocity.y += GRAVITY
+	velocity.y += GRAVITY
 	
 	
 func apply_addicional_fall_gravity() -> void:
-	if parent.velocity.y > 0:
-		parent.velocity.y += ADDICIONAL_FALL_GRAVITY
+	if velocity.y > 0:
+		velocity.y += ADDICIONAL_FALL_GRAVITY
 
 
 func flip() -> void:
-	if parent.velocity.x < 0:
+	if velocity.x < 0:
 		texture.flip_h = true
-	if parent.velocity.x > 0:
+	if velocity.x > 0:
 		texture.flip_h = false
