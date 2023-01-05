@@ -25,26 +25,30 @@ var move_direction = Vector2.ZERO
 func _physics_process(_delta):
 	if Engine.is_editor_hint():
 		return
-		
+			
 	move()
 	jump()
 		
-	
-		
-func move() -> void:
-	input_vector.x = Input.get_action_strength(action_right) - Input.get_action_strength(action_left)
-
-	if input_vector.length() != 0:
-		look_direction = input_vector.normalized()
-
-	velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION)
-	
 	if get_parent() is KinematicBody2D:
 		var parent = get_parent() as KinematicBody2D
-		velocity = parent.move_and_slide(velocity)
+		velocity = parent.move_and_slide(velocity, Vector2.UP)
 	elif get_parent() is Node2D:
 		var parent = get_parent() as Node2D
-		parent.global_position += velocity
+		parent.global_position += velocity	
+	
+func move() -> void:
+	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+	
+	if input_vector.x == 0:
+			apply_friction()
+	else:
+		apply_acceleration(input_vector.x)
+	
+	flip()
+
+
+func apply_gravity() -> void:
+	velocity.y += GRAVITY
 
 
 func jump() -> void:
@@ -63,10 +67,6 @@ func apply_friction() -> void:
 
 func apply_acceleration(amount:int) -> void:
 	velocity.x = move_toward(velocity.x, MAX_SPEED * amount, ACCELERATION)
-
-
-func apply_gravity() -> void:
-	velocity.y += GRAVITY
 	
 	
 func apply_addicional_fall_gravity() -> void:
@@ -79,3 +79,4 @@ func flip() -> void:
 		texture.flip_h = true
 	if velocity.x > 0:
 		texture.flip_h = false
+
